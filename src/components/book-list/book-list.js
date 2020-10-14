@@ -4,18 +4,24 @@ import BookListItem from '../book-list-item';
 import {withBooksService} from '../hoc';
 import {booksLoaded} from '../../actions';
 import compose from '../../utils';
+import Spinner from '../spinner';
 import './book-list.css';
 
 class BookList extends Component {
 
   componentDidMount() {
-    const {booksStoreService} = this.props;
-    const data = booksStoreService.getBooks();
-    this.props.booksLoaded(data);
+    const {booksStoreService, booksLoaded} = this.props;
+    booksStoreService.getBooks()
+      .then((data) => booksLoaded(data));
   }
 
   render() {
-    const {books} = this.props;
+    const {books, loading} = this.props;
+
+    if(loading) {
+      return <Spinner/>
+    }
+
     return (
       <ul className="book-list">
         {books.map((objBook) => {
@@ -30,8 +36,8 @@ class BookList extends Component {
   }
 };
 
-const mapStateToProps = ({books}) => {
-  return {books};
+const mapStateToProps = ({books, loading}) => {
+  return {books, loading};
 };
 
 const mapDispatchToProps = {
