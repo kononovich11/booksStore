@@ -1,9 +1,19 @@
 import React, {Component} from 'react';
-import BookListItem from '../book-list-item';
-import './book-list.css';
 import {connect} from 'react-redux';
+import BookListItem from '../book-list-item';
+import {withBooksService} from '../hoc';
+import {booksLoaded} from '../../actions';
+import compose from '../../utils';
+import './book-list.css';
 
 class BookList extends Component {
+
+  componentDidMount() {
+    const {booksStoreService} = this.props;
+    const data = booksStoreService.getBooks();
+    this.props.booksLoaded(data);
+  }
+
   render() {
     const {books} = this.props;
     return (
@@ -24,4 +34,13 @@ const mapStateToProps = ({books}) => {
   return {books};
 };
 
-export default connect(mapStateToProps)(BookList);
+const mapDispatchToProps = {
+  booksLoaded
+};
+
+
+export default compose(
+  withBooksService(),
+  connect(mapStateToProps, mapDispatchToProps)
+  )(BookList);
+
