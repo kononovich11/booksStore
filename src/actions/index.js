@@ -5,6 +5,21 @@ const booksLoaded = (newBooks) => {
   }
 };
 
+const booksRequested = () => {
+  return {
+    type: 'BOOK_REQUESTED',
+  };
+};
+
+const booksError = (error) => {
+  return {
+    type: 'BOOKS_ERROR',
+    payload: error,
+  }
+};
+
 export {
   booksLoaded,
+  booksRequested,
+  booksError,
 }
