@@ -1,7 +1,38 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import './shopping-table.css';
 
-const ShoppingTable = () => {
+const ShoppingTable = ({items, orderTotal, onIncrease, onDecrease, onDelete}) => {
+
+  const renderRow = (item, index) => { 
+    const {id, name, count, total} = item;
+    return (
+      <tr key ={id}>
+        <td>{index++}</td>
+        <td>{name}</td>
+        <td>{count}</td>
+        <td>${total}</td>
+        <td>
+          <button 
+            className="btn btn-outline-danger"
+            onClick={() => onDelete(id)}>
+            <i className="fa fa-trash-o"/>
+          </button>
+          <button 
+            className="btn btn-outline-success"
+            onClick={() => onIncrease(id)}>
+            <i className="fa fa-plus-circle"/>
+          </button>
+          <button 
+            className="btn btn-outline-warning"
+            onClick={() => onDecrease(id)}>
+            <i className="fa fa-minus-circle"/>
+          </button>
+        </td>
+      </tr>
+    )
+  };
+
   return (
     <div className="shopping-table">
       <h2>Your orders</h2>
@@ -17,31 +48,36 @@ const ShoppingTable = () => {
         </thead>
 
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Site Reliability engineering</td>
-            <td>2</td>
-            <td>$73</td>
-            <td>
-              <button className="btn btn-outline-danger">
-                <i className="fa fa-trash-o"/>
-              </button>
-              <button className="btn btn-outline-success">
-                <i className="fa fa-plus-circle"/>
-              </button>
-              <button className="btn btn-outline-warning">
-                <i className="fa fa-minus-circle"/>
-              </button>
-            </td>
-          </tr>
+          {items.map(renderRow)} 
         </tbody>
       </table>
 
       <div className="total">
-        Total: $146
+        Total: ${orderTotal}
       </div>
     </div>
   );
 };
 
-export default ShoppingTable;
+const mapStateToProps = ({items, orderTotal}) => {
+  return {
+    items,
+    orderTotal,
+  }
+};
+
+const mapDispatchToprops = (dispatch) => {
+  return {
+    onIncrease: () => {
+      console.log(`Increase `);
+    },
+    onDecrease: () => {
+      console.log(`Decrease `);
+    },
+    onDelete: () => {
+      console.log(`Delete`);
+    },
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToprops)(ShoppingTable);
