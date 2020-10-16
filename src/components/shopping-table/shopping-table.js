@@ -5,11 +5,11 @@ import './shopping-table.css';
 const ShoppingTable = ({items, orderTotal, onIncrease, onDecrease, onDelete}) => {
 
   const renderRow = (item, index) => { 
-    const {id, name, count, total} = item;
+    const {id, title, count, total} = item;
     return (
       <tr key ={id}>
-        <td>{index++}</td>
-        <td>{name}</td>
+        <td>{++index}</td>
+        <td>{title}</td>
         <td>{count}</td>
         <td>${total}</td>
         <td>
