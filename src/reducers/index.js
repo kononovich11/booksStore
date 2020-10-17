@@ -7,6 +7,13 @@ const initialState = {
 };
 
 const updateBracket = (items, item, index) => {
+  if(item.count === 0) {
+    return [
+      ...items.slice(0, index),
+      ...items.slice(index + 1),
+    ];
+  }
+
   if(index === -1) {
     return [
       ...items,
@@ -21,7 +28,7 @@ const updateBracket = (items, item, index) => {
   ];
 };
 
-const updateItem = (book, item = {}) => {
+const updateItem = (book, item = {}, quantity) => {
   const {
     id = book.id, 
     count = 0, 
@@ -30,21 +37,24 @@ const updateItem = (book, item = {}) => {
 
   return {
     id,
-    count: count + 1,
+    count: count + quantity,
     title,
-    total: total + book.price,
+    total: total + quantity * book.price,
   };
 };
 
-const deleteItem = (state, itemIndexDel) => {
-  return  {
-    ...state,
-    items: [
-      ...state.items.slice(0, itemIndexDel),
-      ...state.items.slice(itemIndexDel + 1)
-    ],
-  };
-}; 
+const updateOrder = (state, bookId, quantity) => {
+  const {books, items} = state;
+  const book = books.find((book) => book.id === bookId);
+  const itemIndex = items.findIndex(({id}) => id === bookId);
+  const item = items[itemIndex];
+
+  const newItem = updateItem(book, item, quantity);
+    return {
+      ...state,
+      items: updateBracket(items, newItem, itemIndex),
+    };
+}
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -70,52 +80,15 @@ const reducer = (state = initialState, action) => {
         error: action.payload,
       };
     case 'BOOK_ADD_TO_TABLE':
-      const bookId = action.payload;
-      const book = state.books.find((book) => book.id === bookId);
-      const itemIndex = state.items.findIndex(({id}) => id === bookId);
-      const item = state.items[itemIndex];
-
-      const newItem = updateItem(book, item);
-        return {
-          ...state,
-          items: updateBracket(state.items, newItem, itemIndex),
-        };
+      return updateOrder(state, action.payload, 1);
      
     case 'BOOK_DELETE_FROM_TABLE':
-      const bookDeletedId = action.payload;
-      const itemIndexDel = state.items.findIndex(({id}) => id === bookDeletedId);
-  
-     return deleteItem(state, itemIndexDel);
-
+      const item = state.items.find((item) => item.id === action.payload);
+      return updateOrder(state, action.payload, -item.count);
+ 
     case 'DECREASE_ITEM': 
-      const decreaseId = action.payload;
-      const itemDecrease = state.items.find((item) => item.id === decreaseId);
-      const itemIndexDec = state.items.findIndex(({id}) => id === decreaseId);
-      const decBook = state.books.find((book) => book.id === decreaseId);
-      console.log(decBook);
-      
-      let {id, count, title, total} = itemDecrease;
-      const newDecItems = {
-        id,
-        count : count - 1,
-        title,
-        total : total - decBook.price
-      };
-      if(itemDecrease.count === 1) {
-        return deleteItem(state, itemIndexDec);
-      } 
-      else {
-       return  {
-           ...state,
-           items: [
-             ...state.items.slice(0, itemIndexDec),
-             newDecItems,
-             ...state.items.slice(itemIndexDec + 1)
-           ],
-         };
-      }
-
-          
+      return updateOrder(state, action.payload, -1);
+       
     default: return state;
   }
 };

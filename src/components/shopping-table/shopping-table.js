@@ -68,18 +68,10 @@ const mapStateToProps = ({items, orderTotal}) => {
   }
 };
 
-const mapDispatchToprops = (dispatch) => {
-  return {
-    onIncrease: (id) => {
-      dispatch(bookAddToTable(id));
-    },
-    onDecrease: (id) => {
-      dispatch(decreaseItem(id));
-    },
-    onDelete: (id) => {
-      dispatch(bookDeleteFromTable(id));
-    },
-  }
+const mapDispatchToprops = {
+  onIncrease: bookAddToTable,
+  onDecrease: decreaseItem,
+  onDelete: bookDeleteFromTable,
 };
 
 export default connect(mapStateToProps, mapDispatchToprops)(ShoppingTable);
