@@ -1,11 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {bookAddToTable, bookDeleteFromTable, decreaseItem} from '../../actions';
 import './shopping-table.css';
 
 const ShoppingTable = ({items, orderTotal, onIncrease, onDecrease, onDelete}) => {
 
   const renderRow = (item, index) => { 
     const {id, title, count, total} = item;
+    let panelAction; 
     return (
       <tr key ={id}>
         <td>{++index}</td>
@@ -20,7 +22,7 @@ const ShoppingTable = ({items, orderTotal, onIncrease, onDecrease, onDelete}) =>
           </button>
           <button 
             className="btn btn-outline-success"
-            onClick={() => onIncrease(id)}>
+            onClick={() => onIncrease(id, panelAction='increase')}>
             <i className="fa fa-plus-circle"/>
           </button>
           <button 
@@ -68,14 +70,14 @@ const mapStateToProps = ({items, orderTotal}) => {
 
 const mapDispatchToprops = (dispatch) => {
   return {
-    onIncrease: () => {
-      console.log(`Increase `);
+    onIncrease: (id) => {
+      dispatch(bookAddToTable(id));
     },
-    onDecrease: () => {
-      console.log(`Decrease `);
+    onDecrease: (id) => {
+      dispatch(decreaseItem(id));
     },
-    onDelete: () => {
-      console.log(`Delete`);
+    onDelete: (id) => {
+      dispatch(bookDeleteFromTable(id));
     },
   }
 };

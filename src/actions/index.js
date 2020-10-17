@@ -25,6 +25,20 @@ export const bookAddToTable = (bookId) => {
   }
 };
 
+export const bookDeleteFromTable = (bookId) => {
+  return {
+    type: 'BOOK_DELETE_FROM_TABLE',
+    payload: bookId,
+  };
+}
+
+export const decreaseItem = (bookId) => {
+  return {
+    type: 'DECREASE_ITEM',
+    payload: bookId,
+  }
+} 
+
 const fetchBooks = (booksStoreService, dispatch) => () => {
   dispatch(booksRequested());
   booksStoreService.getBooks()
