@@ -2,7 +2,6 @@ import updateBookList from './book-list';
 import updateShoppingBasket from './shopping-basket';
 
 const reducer = (state, action) => {
-  console.log(action);
   return {
     bookList: updateBookList(state, action),
     shoppingBasket: updateShoppingBasket(state, action)
