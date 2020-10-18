@@ -39,12 +39,19 @@ export const decreaseItem = (bookId) => {
   }
 } 
 
-const fetchBooks = (booksStoreService, dispatch) => () => {
+const fetchBooksOld = (booksStoreService, dispatch) => () => {
   dispatch(booksRequested());
   booksStoreService.getBooks()
     .then((data) => dispatch(booksLoaded(data)))
     .catch((error => dispatch(booksError(error))));
-}
+};
+
+const fetchBooks = (booksStoreService) => () => (dispatch) => {
+  dispatch(booksRequested());
+  booksStoreService.getBooks()
+    .then((data) => dispatch(booksLoaded(data)))
+    .catch((error => dispatch(booksError(error))));
+};
 
 export {
   fetchBooks
